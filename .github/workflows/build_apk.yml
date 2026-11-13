@@ -30,13 +30,21 @@ jobs:
           flutter create . --project-name amoled_liquid_player --org com.liquid.player
           flutter pub get
 
-      - name: Configure Android permissions for local audio
+      - name: Patch Android configurations & old plugin namespaces
         run: |
           MANIFEST="android/app/src/main/AndroidManifest.xml"
           if ! grep -q "READ_MEDIA_AUDIO" "$MANIFEST"; then
             sed -i 's/<application/<uses-permission android:name="android.permission.READ_MEDIA_AUDIO"\/>\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"\/>\n    <application/' "$MANIFEST"
           fi
           sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 23/g' android/app/build.gradle* || true
+          
+          # Auto-patch old plugins missing namespace for AGP 8+
+          PLUGIN_GRADLE="$HOME/.pub-cache/hosted/pub.dev/on_audio_query_android-1.1.0/android/build.gradle"
+          if [ -f "$PLUGIN_GRADLE" ]; then
+            if ! grep -q "namespace" "$PLUGIN_GRADLE"; then
+              sed -i 's/android {/android {\n    namespace "com.lucasjosino.flutter_to_audio"\n/g' "$PLUGIN_GRADLE"
+            fi
+          fi
 
       - name: Build Release APK
         run: flutter build apk --release --no-tree-shake-icons --no-pub
