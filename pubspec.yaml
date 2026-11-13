@@ -1,0 +1,26 @@
+name: amoled_liquid_player
+description: AMOLED Black Local Music Player with Liquid Glass UI and Spring Physics.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  just_audio: ^0.9.40
+  on_audio_query: ^2.9.0
+  palette_generator: ^0.3.3+4
+  sensors_plus: ^6.0.1
+  provider: ^6.1.2
+  google_fonts: ^6.2.1
+  permission_handler: ^11.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
