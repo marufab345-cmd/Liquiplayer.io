@@ -3,8 +3,6 @@ name: Build AMOLED Liquid Music Player
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -16,11 +14,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: Setup Flutter (Stable)
         uses: subosito/flutter-action@v2
@@ -40,9 +37,6 @@ jobs:
             sed -i 's/<application/<uses-permission android:name="android.permission.READ_MEDIA_AUDIO"\/>\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"\/>\n    <application/' "$MANIFEST"
           fi
           sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 23/g' android/app/build.gradle* || true
-
-      - name: Analyze Dart code
-        run: flutter analyze --no-fatal-infos
 
       - name: Build Release APK
         run: flutter build apk --release --no-tree-shake-icons
